@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPalette, FaArrowRight } from "react-icons/fa";
-import laptop from "../assets/laptop.svg"; // Update with your illustration
+import laptop from "../assets/laptop.svg";
 
 
 const Hero = () => {
@@ -20,7 +20,7 @@ const Hero = () => {
         <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left mb-10 md:mb-0">
           <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-800 mb-4">
             Unleash Creativity<br className="hidden md:block" />
-            with AI Color Palettes
+            with <span className="text-purple-600">AI Color Palettes</span>
           </h1>
           <p className="text-gray-700 mb-6 max-w-md">
             Instantly generate stunning, harmonious palettes for any digital project. Let our AI inspire your next masterpiece—mix, remix, and save your favorites with ease.
