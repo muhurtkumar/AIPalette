@@ -1,6 +1,13 @@
 import React from "react";
+import { toast } from "react-toastify";
 
 const ColorPaletteBlock = ({ colors, height = "h-25" }) => {
+
+  const handleCopy = (color) => {
+    navigator.clipboard.writeText(color);
+    toast.success(`${color} copied to clipboard`)
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 w-full">
       <div className="flex">
@@ -9,6 +16,7 @@ const ColorPaletteBlock = ({ colors, height = "h-25" }) => {
             key={index}
             className={`relative flex-1 ${height} group cursor-pointer`}
             style={{ backgroundColor: color }}
+            onClick={() => handleCopy(color)}
           >
             {/* Hover Tooltip */}
             <span className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
