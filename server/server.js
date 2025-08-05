@@ -2,12 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/db.js';
+import connectCloudinary from './config/cloudinary.js';
 
 // Initialize the Express application
 const app = express();
 
 // Database connection
 await connectDB()
+await connectCloudinary();
 
 // Middlewares
 app.use(cors());
