@@ -46,3 +46,41 @@ export const registerUser = async (req, res) => {
         });
     }
 };
+
+// User Login
+export const loginUser = async (req, res) => {
+    const {email, password} = req.body;
+
+    try {
+        if(!email || !password) {
+            return res.json({success:false, message: "All fields are required" });
+        }
+
+        const user = await User.findOne({email})
+        if(!user) {
+            return res.json({success:false, message: "User not registered" });
+        }
+
+        if(await bcrypt.compare(password, user.password)){
+            res.status(200).json({
+                success: true,
+                message: "User logged in successfully",
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    image: user.image
+                },
+                token: generateToken(user._id)
+            });
+        }
+        else{
+            return res.json({success:false, message: "Invalid email or password" });
+        }
+    } catch (error) {
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
