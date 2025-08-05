@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/db.js';
 import connectCloudinary from './config/cloudinary.js';
+import userRoutes from './routes/userRoutes.js';
 
 // Initialize the Express application
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req, res)=> res.send("API Working"))
+app.use('/api/users', userRoutes);
 
 //PORT
 const PORT = process.env.PORT || 5000;
