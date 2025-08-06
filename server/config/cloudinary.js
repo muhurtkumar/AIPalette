@@ -17,7 +17,9 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'aipalette-profile-photos',
         allowed_formats: ['jpeg', 'png', 'jpg'],
-        transformation: [{ width: 500, height: 500, crop: 'limit' }],
+        transformation: [
+        { width: 500, height: 500, crop: 'fill', gravity: 'face' },
+        ],
     },
 });
 
