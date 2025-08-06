@@ -5,10 +5,12 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import upload_area from '../assets/upload_area.svg';
 import { IoMdClose } from "react-icons/io";
 import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
-    const {setShowLogin} = useContext(AppContext);
+    const {setShowLogin, backendUrl, setUserToken, setUserData} = useContext(AppContext);
 
     const[state, setState] = useState('Login')
     const [name, setName] = useState('')
@@ -21,7 +23,52 @@ const Login = () => {
     const onSubmitHandler = async(e) => {
         e.preventDefault();
         if(state == "Sign Up" && !isTextDataSubmitted){
-            setIsTextDataSubmitted(true);
+            return setIsTextDataSubmitted(true);
+        }
+
+        try {
+            if(state === "Login"){
+                const {data} = await axios.post(backendUrl + '/api/users/login', {
+                    email,
+                    password
+                })
+
+                if(data.success){
+                    setUserData(data.user);
+                    setUserToken(data.token);
+                    localStorage.setItem('userToken', data.token);
+                    setShowLogin(false);
+                }
+                else{
+                    toast.error(data.message);
+                }
+            }
+            else{
+                if (!image) {
+                    toast.error("Please upload a profile picture");
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('password', password);
+                formData.append('email', email);
+                formData.append('image', image);
+
+                const {data} = await axios.post(backendUrl + '/api/users/register', formData)
+
+                if(data.success){
+                    setUserData(data.user);
+                    setUserToken(data.token);
+                    localStorage.setItem('userToken', data.token);
+                    setShowLogin(false);
+                }
+                else{
+                    toast.error(data.message);
+                }
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || error.message || "Something went wrong, please try again later";
+            toast.error(message);
         }
     }
 
@@ -36,7 +83,7 @@ const Login = () => {
         <div className='absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center'>
             <form onSubmit={onSubmitHandler} className='relative bg-white p-10 rounded-xl text-slate-500'>
                 <h1 className='text-center text-2xl text-neutral-700 font-medium'>{state} Form</h1>
-                <p className='text-sm'>Welcome back! Please sign in to continue</p>
+                <p className='text-sm'>{state === "Login" ? "Welcome back! Please sign in to continue" : "Join us by creating your account"}</p>
                 {state === "Sign Up" && isTextDataSubmitted
                 ? <>
                     <div className='flex items-center gap-4 my-10'>
