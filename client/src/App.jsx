@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from './components/Login'
 import { AppContext } from './context/AppContext'
+import Generate from './pages/Generate'
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
+          <Route path='/generate' element={<Generate />} />
         </Routes>
         <Footer />
       </div>

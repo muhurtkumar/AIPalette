@@ -89,3 +89,26 @@ export const paletteColors = [
   ["#ffe0ac", "#ffd6a5", "#ffadad", "#cdb4db", "#a2d2ff"],
   ["#fcfcfc", "#d9d9d9", "#a6a6a6", "#737373", "#404040"],
 ];
+
+export const prompts = [
+  "Sunset at the beach",
+  "Cyberpunk cityscape",
+  "Vintage retro diner",
+  "Tropical rainforest",
+  "Minimalist workspace",
+  "Autumn leaves",
+  "Underwater coral reef",
+  "Northern lights",
+  "Japanese cherry blossom",
+  "Modern tech startup",
+  "Desert oasis",
+  "Bohemian festival vibes",
+  "Luxury fashion brand",
+  "Rainy day in the city",
+  "Winter wonderland",
+  "Oceanic deep sea",
+  "Gothic architecture",
+  "Soft pastel nursery",
+  "Space galaxy theme",
+  "Mediterranean seaside village"
+];
