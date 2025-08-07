@@ -4,6 +4,7 @@ import 'dotenv/config';
 import connectDB from './config/db.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRoutes from './routes/userRoutes.js';
+import paletteRoutes from './routes/paletteRoutes.js';
 
 // Initialize the Express application
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 // Routes
 app.get('/', (req, res)=> res.send("API Working"))
 app.use('/api/users', userRoutes);
+app.use('/api/palettes', paletteRoutes);
 
 //PORT
 const PORT = process.env.PORT || 5000;
