@@ -5,7 +5,7 @@ export const protectUser = async (req, res, next) => {
     const token = req.headers.token
 
     if(!token){
-        return res.status(401).json({success: false, message: "Not authorized, Login again!" });
+        return res.status(401).json({success: false, message: "Not authorized, Login to continue!" });
     }
 
     try {

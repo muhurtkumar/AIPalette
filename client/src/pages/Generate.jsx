@@ -1,31 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ColorPaletteBlock from "../components/ColorPaletteBlock";
 import { prompts } from "../assets/assets.js";
 import { FaEye, FaDownload, FaPalette } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
 
 const Generate = () => {
+    
+    const { userToken, backendUrl } = useContext(AppContext);
+
     const [prompt, setPrompt] = useState("");
     const [generatedPrompt, setGeneratedPrompt] = useState("");
     const [loading, setLoading] = useState(false);
     const [palettes, setPalettes] = useState([]);
 
     const handleGenerate = async () => {
-        if (!prompt.trim()){
+        if (!prompt.trim()) {
             toast.error("Please enter a prompt to generate!");
             return;
         }
+
         setLoading(true);
         setPalettes([]);
         setGeneratedPrompt(prompt);
 
-        setTimeout(() => {
-            const dummyPalettes = Array.from({ length: 9 }, () =>
-                Array.from({ length: 5 }, () => `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`)
+        try {
+            const res = await axios.post(backendUrl + '/api/palettes/generate',
+                { prompt },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        token: userToken,
+                    },
+                }
             );
-            setPalettes(dummyPalettes);
+
+            const data = res.data;
+
+            if (!data.success) {
+                toast.error(data.message || "Failed to generate palettes");
+                setLoading(false);
+                return;
+            }
+
+            const extracted = data.palettes.map((p) => p.colors);
+            setPalettes(extracted);
+            toast.success("Palettes generated successfully!");
+        } catch (err) {
+            toast.error(err.response?.data?.message || err.message || "Server Error");
+        } finally {
             setLoading(false);
-        }, 2000);
+        }
     };
 
     const handlePromptClick = (selectedPrompt) => {
@@ -40,7 +66,7 @@ const Generate = () => {
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
                 <input type="text" placeholder="Enter a theme (e.g., sunset, forest, sky, love etc.)" className="flex-1 px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-                <button onClick={handleGenerate} className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition">
+                <button onClick={handleGenerate} disabled={loading} className={`text-white px-6 py-3 rounded-md transition ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}>
                     {loading ? "Generating..." : "Generate"}
                 </button>
             </div>
