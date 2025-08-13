@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from './components/Login'
 import { AppContext } from './context/AppContext'
 import Generate from './pages/Generate'
+import Profile from './pages/Profile'
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
           <Route path='/generate' element={<Generate />} />
+          <Route path='/profile' element={<Profile />} />
         </Routes>
         <Footer />
       </div>
