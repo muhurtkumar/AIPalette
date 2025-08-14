@@ -18,6 +18,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  savedPalettes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Palette'
+    }
+  ],
+  savedColors: [
+    {
+      type: String
+    }
+  ],
+},
+{
+  timestamps: true
 });
 
 const User = mongoose.model('User', userSchema); 

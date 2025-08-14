@@ -1,5 +1,5 @@
 import express from 'express';
-import { generatePalettes, getAllPalettes } from '../controllers/paletteController.js';
+import { generatePalettes, getAllPalettes, savePalette } from '../controllers/paletteController.js';
 import { protectUser } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -9,5 +9,8 @@ router.post('/generate', protectUser, generatePalettes);
 
 // Route to get all palettes
 router.get('/allPalettes', getAllPalettes);
+
+// Route to save a palette to user's savedPalettes
+router.post('/save', protectUser, savePalette);
 
 export default router;
