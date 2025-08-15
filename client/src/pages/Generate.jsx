@@ -7,8 +7,8 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 
 const Generate = () => {
-    
-    const { userToken, backendUrl } = useContext(AppContext);
+
+    const { userToken, backendUrl, savePalette } = useContext(AppContext);
 
     const [prompt, setPrompt] = useState("");
     const [generatedPrompt, setGeneratedPrompt] = useState("");
@@ -44,7 +44,10 @@ const Generate = () => {
                 return;
             }
 
-            const extracted = data.palettes.map((p) => p.colors);
+            const extracted = data.palettes.map((p) => ({
+                _id: p._id,
+                colors: p.colors
+            }));
             setPalettes(extracted);
             toast.success("Palettes generated successfully!");
         } catch (err) {
@@ -85,9 +88,9 @@ const Generate = () => {
                         Showing results for: <strong>{generatedPrompt}</strong>
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                        {palettes.map((colors, idx) => (
+                        {palettes.map((palette, idx) => (
                             <div key={idx} className="flex flex-col items-center">
-                                <ColorPaletteBlock colors={colors} />
+                                <ColorPaletteBlock colors={palette.colors} />
                                 <div className="flex justify-end items-center w-full mt-3 text-gray-600 text-sm px-4">
                                     <div className="flex items-center gap-4">
                                         <div className="hover:text-blue-500 cursor-pointer">
@@ -96,7 +99,7 @@ const Generate = () => {
                                         <div className="hover:text-blue-500 cursor-pointer">
                                             <FaPalette />
                                         </div>
-                                        <div className="hover:text-green-500 cursor-pointer">
+                                        <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette(palette._id)}>
                                             <FaDownload />
                                         </div>
                                     </div>

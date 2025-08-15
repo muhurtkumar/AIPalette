@@ -31,8 +31,36 @@ export const AppContextProvider = (props) => {
             toast.error(error.message);
         }
     }
+
+    // Function to save palette
+    const savePalette = async (paletteId) => {
+        if (!userToken) {
+            toast.error("You must be logged in to save palettes");
+            return;
+        }
+
+        try {
+            const { data } = await axios.post(backendUrl + '/api/palettes/save', {
+                paletteId
+            }, {
+                headers: { token: userToken }
+            });
+            if (data.success) {
+                setUserData((prev) => ({
+                ...prev,
+                savedPalettes: data.savedPalettes,
+                }));
+                toast.success(data.message);
+            } 
+            else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
     
-     useEffect(() => {
+    useEffect(() => {
 
         const storedUserToken = localStorage.getItem('userToken'); // keep access of token even after page refresh
         if(storedUserToken) {
@@ -54,7 +82,8 @@ export const AppContextProvider = (props) => {
         userData,
         setUserData,
         backendUrl,
-        fetchUserData
+        fetchUserData, 
+        savePalette
     }
 
     return (

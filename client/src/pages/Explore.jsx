@@ -8,7 +8,7 @@ import Loading from "../components/Loading.jsx";
 
 const Explore = () => {
     
-    const { backendUrl } = useContext(AppContext);
+    const { backendUrl, savePalette } = useContext(AppContext);
 
     const [palettes, setPalettes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ const Explore = () => {
                                     <div className="hover:text-blue-500 cursor-pointer">
                                     <FaPalette />
                                     </div>
-                                    <div className="hover:text-green-500 cursor-pointer">
+                                    <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette(palette._id)}>
                                     <FaDownload />
                                     </div>
                                 </div>
