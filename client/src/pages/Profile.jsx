@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import ColorPaletteBlock from "../components/ColorPaletteBlock";
 import { FiEye } from "react-icons/fi";
+import { AppContext } from "../context/AppContext";
 
 const Profile = () => {
-    const [user, setUser] = useState({
-        name: "John Doe",
-        email: "john@example.com",
-        savedColors: ["#FF5733", "#3498DB", "#2ECC71", "#F1C40F"],
-        savedPalettes: [
-        ["#FF5733", "#FF8D1A", "#FFC300", "#DAF7A6", "#FF8D1A"],
-        ["#3498DB", "#2ECC71", "#1ABC9C", "#9B59B6", "#FF8D1A"]
-        ]
-    });
+    const { userData, fetchUserData } = useContext(AppContext);
 
     useEffect(() => {
-        // Future API call to fetch profile data
-    }, []);
+        if (!userData) {
+            fetchUserData();
+        }
+    }, [userData, fetchUserData]);
+
+    if (!userData) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-gray-500">Loading profile...</p>
+            </div>
+        );
+    }
 
     const handleRemoveColor = (colorToRemove) => {
         setUser((prevUser) => ({
@@ -40,11 +43,11 @@ const Profile = () => {
                 <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between mb-10">
                     <div className="flex items-center gap-4">
                         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                            {user.name.charAt(0)}
+                            {userData.name?.charAt(0)}
                         </div>
                         <div>
-                            <h1 className="text-3xl font-extrabold text-gray-800">{user.name}</h1>
-                            <p className="text-gray-500">{user.email}</p>
+                            <h1 className="text-3xl font-extrabold text-gray-800">{userData.name}</h1>
+                            <p className="text-gray-500">{userData.email}</p>
                         </div>
                     </div>
                 </div>
@@ -53,7 +56,7 @@ const Profile = () => {
                 <div className="mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-5">🎨 Saved Colors</h2>
                     <div className="flex flex-wrap gap-6">
-                        {user.savedColors.map((color, index) => (
+                        {userData.savedColors?.map((color, index) => (
                             <div key={index} className="relative flex flex-col items-center group cursor-pointer bg-white rounded-xl shadow p-3 border border-gray-200">
                                 {/* Color Block */}
                                 <div
@@ -77,10 +80,10 @@ const Profile = () => {
                 <div>
                     <h2 className="text-2xl font-semibold text-gray-800 mb-5">🖌 Saved Palettes</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {user.savedPalettes.map((palette, index) => (
+                        {userData.savedPalettes?.map((palette, index) => (
                             <div key={index} className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col gap-3 hover:shadow-xl transition-shadow">
                                 {/* Palette using ColorPaletteBlock */}
-                                <ColorPaletteBlock colors={palette} height="h-20" />
+                                <ColorPaletteBlock colors={palette.colors} height="h-20" />
 
                                 {/* Buttons */}
                                 <div className="flex gap-2">

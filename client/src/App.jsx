@@ -13,7 +13,7 @@ import Profile from './pages/Profile'
 
 const App = () => {
 
-    const {showLogin} = useContext(AppContext)
+    const {showLogin, userToken} = useContext(AppContext)
   
     return (
       <div>
@@ -24,7 +24,7 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
           <Route path='/generate' element={<Generate />} />
-          <Route path='/profile' element={<Profile />} />
+          {userToken && <Route path='/profile' element={<Profile />} />}
         </Routes>
         <Footer />
       </div>
