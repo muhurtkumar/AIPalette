@@ -118,7 +118,7 @@ export const deleteSavedPalette = async (req, res) => {
 
         res.status(200).json({
         success: true,
-        message: "Palette removed from saved palettes",
+        message: "Palette removed successfully",
         savedPalettes: user.savedPalettes
         });
     } catch (error) {
