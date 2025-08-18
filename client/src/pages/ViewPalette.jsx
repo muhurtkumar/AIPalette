@@ -12,12 +12,12 @@ const ViewPalette = () => {
 
     const fetchPaletteById = async () => {
         try {
-        const data = await getPaletteById(id);
-        if (data) {
-            setPalette(data);
-        }
+            const data = await getPaletteById(id);
+            if (data) {
+                setPalette(data);
+            }
         } catch (error) {
-        console.error("Error fetching palette:", error);
+            console.error("Error fetching palette:", error);
         }
     };
 
@@ -43,7 +43,7 @@ const ViewPalette = () => {
             </div>
 
             {/* Palette Visualization */}
-            <div className="flex flex-1">
+            <div className="flex flex-1 flex-col lg:flex-row">
                 {palette.colors.map((color, idx) => (
                     <div key={idx} className="group relative flex-1 flex items-center justify-center" style={{ backgroundColor: color }}>
                         {/* Hex code */}
@@ -51,8 +51,7 @@ const ViewPalette = () => {
                             {color.toUpperCase()}
                         </span>
 
-                        {/* Hover Icons */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute inset-0 flex flex-row lg:flex-col items-center justify-center gap-6 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                             <FaPalette className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
                             <FaRegClipboard className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
                             <FaHeart className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
