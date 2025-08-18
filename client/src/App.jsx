@@ -10,6 +10,7 @@ import Login from './components/Login'
 import { AppContext } from './context/AppContext'
 import Generate from './pages/Generate'
 import Profile from './pages/Profile'
+import ViewPalette from './pages/ViewPalette'
 
 const App = () => {
 
@@ -24,6 +25,7 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/explore' element={<Explore />} />
           <Route path='/generate' element={<Generate />} />
+          <Route path='/palette/:id' element={<ViewPalette />} />
           {userToken && <Route path='/profile' element={<Profile />} />}
         </Routes>
         <Footer />

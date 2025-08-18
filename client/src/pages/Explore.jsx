@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
 import Loading from "../components/Loading.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Explore = () => {
     
@@ -12,6 +13,7 @@ const Explore = () => {
 
     const [palettes, setPalettes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const fetchPalettes = async () => {
         try {
@@ -54,7 +56,7 @@ const Explore = () => {
                                     <div className="hover:text-blue-500 cursor-pointer">
                                     <FaEye />
                                     </div>
-                                    <div className="hover:text-blue-500 cursor-pointer">
+                                    <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
                                     <FaPalette />
                                     </div>
                                     <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette(palette._id)}>

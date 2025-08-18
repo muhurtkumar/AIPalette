@@ -59,6 +59,23 @@ export const AppContextProvider = (props) => {
             toast.error(error.response?.data?.message || error.message);
         }
     };
+
+    // Function to get a palette by ID
+    const getPaletteById = async (id) => {
+        try {
+            const { data } = await axios.get(backendUrl + `/api/palettes/palette/${id}`);
+            if (data.success) {
+                return data.palette; 
+            } 
+            else {
+                toast.error(data.message);
+                return null;
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+            return null;
+        }
+    };
     
     useEffect(() => {
 
@@ -83,7 +100,8 @@ export const AppContextProvider = (props) => {
         setUserData,
         backendUrl,
         fetchUserData, 
-        savePalette
+        savePalette,
+        getPaletteById
     }
 
     return (
