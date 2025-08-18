@@ -127,3 +127,19 @@ export const deleteSavedPalette = async (req, res) => {
     }
 };
 
+// Get a palette by ID
+export const getPaletteById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const palette = await Palette.findById(id);
+        if (!palette) {
+            return res.status(404).json({ success: false, message: "Palette not found" });
+        }
+
+        return res.status(200).json({ success: true, palette });
+    } catch (error) {
+        console.error("Error fetching palette:", error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
