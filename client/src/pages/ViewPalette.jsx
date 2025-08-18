@@ -2,10 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import { FaEye, FaHeart, FaMagic, FaPalette, FaRegClipboard, FaThLarge } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ViewPalette = () => {
     const { id } = useParams();
-    const { getPaletteById } = useContext(AppContext);
+    const { getPaletteById, saveColor } = useContext(AppContext);
     const [palette, setPalette] = useState(null);
 
     const navigate = useNavigate();
@@ -24,6 +25,16 @@ const ViewPalette = () => {
     useEffect(() => {
         fetchPaletteById();
     }, [id, getPaletteById]);
+
+    const copyToClipboard = async (color) => {
+        try {
+            await navigator.clipboard.writeText(color);
+            toast.success(`${color.toUpperCase()} copied to clipboard!`);
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+            toast.error("Failed to copy color code");
+        }
+    };
 
     if (!palette) return <p>Loading...</p>;
 
@@ -53,8 +64,8 @@ const ViewPalette = () => {
 
                         <div className="absolute inset-0 flex flex-row lg:flex-col items-center justify-center gap-6 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                             <FaPalette className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
-                            <FaRegClipboard className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
-                            <FaHeart className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
+                            <FaRegClipboard className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" onClick={() => copyToClipboard(color)} />
+                            <FaHeart className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" onClick={() => saveColor(color)} />
                             <FaThLarge className="text-white text-xl cursor-pointer hover:scale-110 transition-transform" />
                         </div>
                     </div>

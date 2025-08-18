@@ -143,3 +143,29 @@ export const getPaletteById = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+// Save color to user's savedColors
+export const saveColor = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { color } = req.body || {};
+        if (!color) {
+            return res.status(400).json({ success: false, message: "Color is required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        
+        if(user.savedColors.includes(color)){
+            return res.status(400).json({ success: false, message: "Color already saved" });
+        }
+        user.savedColors.push(color);
+        await user.save();
+        res.json({success: true, message: "Color saved successfully", savedColors: user.savedColors });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};

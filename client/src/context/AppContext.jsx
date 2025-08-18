@@ -60,6 +60,34 @@ export const AppContextProvider = (props) => {
         }
     };
 
+    // Function to save color
+    const saveColor = async (color) => {
+        if (!userToken) {
+            toast.error("You must be logged in to save colors");
+            return;
+        }
+
+        try {
+            const { data } = await axios.post(backendUrl + '/api/palettes/color/save', {
+                color
+            }, {
+                headers: { token: userToken }
+            });
+
+            if (data.success) {
+                setUserData((prev) => ({
+                    ...prev,
+                    savedColors: data.savedColors,
+                }));
+                toast.success(data.message);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+
     // Function to get a palette by ID
     const getPaletteById = async (id) => {
         try {
@@ -101,7 +129,8 @@ export const AppContextProvider = (props) => {
         backendUrl,
         fetchUserData, 
         savePalette,
-        getPaletteById
+        getPaletteById,
+        saveColor
     }
 
     return (
