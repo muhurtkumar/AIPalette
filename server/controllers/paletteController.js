@@ -19,7 +19,7 @@ export const generatePalettes = async (req, res) => {
         }
 
         const savedPalettes = await Palette.insertMany(
-            palettes.map((colors) => ({ colors, user: userId }))
+            palettes.map((colors) => ({ colors, user: null }))
         );
 
         return res.status(201).json({ success: true, palettes: savedPalettes });
@@ -32,7 +32,7 @@ export const generatePalettes = async (req, res) => {
 // Get all palettes sorted by likes
 export const getAllPalettes = async (req, res) => {
     try {
-        const palettes = await Palette.find()
+        const palettes = await Palette.find({user: null})
         .sort({ likes: -1 });
 
         return res.status(200).json({
@@ -51,42 +51,56 @@ export const getAllPalettes = async (req, res) => {
 
 // Save palette to user's savedPalettes
 export const savePalette = async (req, res) => {
-    const { paletteId } = req.body;
-    const userId = req.user?._id;
-
-    if (!paletteId) {
-        return res.status(400).json({ success: false, message: "Palette ID is required" });
+    const { paletteId, colors } = req.body || {};
+    if (!paletteId && !colors) {
+        return res.status(400).json({ success: false, message: "paletteId or colors required" });
     }
+    const userId = req.user._id;
 
     if (!userId) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
     try {
-        // Check if palette exists
-        const palette = await Palette.findById(paletteId);
-        if (!palette) {
-            return res.status(404).json({ success: false, message: "Palette not found" });
+        let finalColors;
+
+        // CASE 1: Save from existing palette
+        if (paletteId) {
+            const original = await Palette.findById(paletteId);
+            if (!original) {
+                return res.status(404).json({ success: false, message: "Palette not found" });
+            }
+            finalColors = original.colors;
         }
 
-        // Add palette to user's savedPalettes if not already saved
-        const user = await User.findById(userId);
-        if (user.savedPalettes.some(id => id.equals(paletteId))) {
+        // CASE 2: Save edited/new palette
+        if (colors?.length > 0) {
+            finalColors = colors;
+        }
+        if (!finalColors?.length) {
+            return res.status(400).json({ success: false, message: "No colors provided" });
+        }
+
+        const exists = await Palette.findOne({ user: userId, colors: finalColors });
+        if (exists) {
             return res.status(400).json({ success: false, message: "Palette already saved" });
         }
 
-        user.savedPalettes.push(paletteId);
-        await user.save();
+        // Always create a fresh copy
+        const newPalette = await Palette.create({
+            user: userId,
+            colors: finalColors,
+        });
+
+        await User.findByIdAndUpdate(userId, {
+            $push: { savedPalettes: newPalette._id },
+        });
         const updatedUser = await User.findById(userId).populate("savedPalettes");
 
-        return res.status(200).json({ 
-            success: true,
-            message: "Palette saved successfully",
-            savedPalettes: updatedUser.savedPalettes
-        });
-    } catch (err) {
-        console.error("Error saving palette:", err);
-        return res.status(500).json({ success: false, message: "Server error" });
+        res.status(201).json({ success: true, message: "Palette saved successfully", user: updatedUser });
+    } catch (error) {
+        console.error("Save Palette Error:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
 
