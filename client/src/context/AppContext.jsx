@@ -1,10 +1,12 @@
 import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
+    const navigate = useNavigate();
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -33,7 +35,7 @@ export const AppContextProvider = (props) => {
     }
 
     // Function to save palette
-    const savePalette = async (paletteId) => {
+    const savePalette = async ({ paletteId, colors }) => {
         if (!userToken) {
             toast.error("You must be logged in to save palettes");
             return;
@@ -41,14 +43,15 @@ export const AppContextProvider = (props) => {
 
         try {
             const { data } = await axios.post(backendUrl + '/api/palettes/save', {
-                paletteId
+                paletteId: paletteId || undefined,
+                colors: colors || undefined,
             }, {
                 headers: { token: userToken }
             });
             if (data.success) {
                 setUserData((prev) => ({
                 ...prev,
-                savedPalettes: data.savedPalettes,
+                savedPalettes: data.user.savedPalettes,
                 }));
                 toast.success(data.message);
             } 

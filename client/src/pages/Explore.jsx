@@ -59,7 +59,7 @@ const Explore = () => {
                                     <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
                                     <FaPalette />
                                     </div>
-                                    <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette(palette._id)}>
+                                    <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette({ paletteId: palette._id })}>
                                     <FaDownload />
                                     </div>
                                 </div>

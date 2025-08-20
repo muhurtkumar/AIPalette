@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const ViewPalette = () => {
     const { id } = useParams();
-    const { getPaletteById, saveColor } = useContext(AppContext);
+    const { getPaletteById, saveColor, savePalette } = useContext(AppContext);
     const [palette, setPalette] = useState(null);
 
     // modal state
@@ -67,7 +67,7 @@ const ViewPalette = () => {
                 <button className="text-gray-600 hover:text-blue-500 text-xl">
                     <FaEye />
                 </button>
-                <button className="text-gray-600 hover:text-red-500 text-xl">
+                <button className="text-gray-600 hover:text-red-500 text-xl" onClick={() => savePalette({ paletteId: palette._id, colors: palette.colors })}>
                     <FaHeart />
                 </button>
                 <button className="text-gray-600 hover:text-green-500 text-xl" onClick={() => navigate("/generate")}>
