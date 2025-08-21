@@ -109,31 +109,23 @@ export const deleteSavedPalette = async (req, res) => {
         const userId = req.user._id;
         const { paletteId } = req.params;
 
-        // Check if palette exists
-        const paletteExists = await Palette.exists({ _id: paletteId });
-        if (!paletteExists) {
-        return res.status(404).json({ message: "Palette not found" });
+        const palette = await Palette.findOne({ _id: paletteId, user: userId });
+        if (!palette) {
+            return res.status(404).json({ message: "Palette not found" });
         }
 
-        // Find user
-        const user = await User.findById(userId);
-        const beforeLength = user.savedPalettes.length;
+        await User.findByIdAndUpdate(userId, {
+            $pull: { savedPalettes: paletteId }
+        });
 
-        // Remove palette
-        user.savedPalettes = user.savedPalettes.filter(
-        id => id.toString() !== paletteId
-        );
+        await Palette.findByIdAndDelete(paletteId);
 
-        if (beforeLength === user.savedPalettes.length) {
-        return res.status(404).json({ message: "Palette not found in saved list" });
-        }
-
-        await user.save();
+        const updatedUser = await User.findById(userId).populate("savedPalettes");
 
         res.status(200).json({
-        success: true,
-        message: "Palette removed successfully",
-        savedPalettes: user.savedPalettes
+            success: true,
+            message: "Palette removed successfully",
+            savedPalettes: updatedUser.savedPalettes
         });
     } catch (error) {
         console.error(error);
