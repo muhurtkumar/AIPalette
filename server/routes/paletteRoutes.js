@@ -1,5 +1,5 @@
 import express from 'express';
-import { generatePalettes, getAllPalettes, savePalette, deleteSavedPalette, getPaletteById, saveColor } from '../controllers/paletteController.js';
+import { generatePalettes, getAllPalettes, savePalette, deleteSavedPalette, getPaletteById, saveColor, deleteColor } from '../controllers/paletteController.js';
 import { protectUser } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -21,5 +21,8 @@ router.get('/palette/:id', getPaletteById);
 
 // Route to save a color to user's savedColors
 router.post('/color/save', protectUser, saveColor);
+
+// Route to delete a color from user's savedColors
+router.delete('/color/delete', protectUser, deleteColor);
 
 export default router;

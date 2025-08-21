@@ -22,11 +22,30 @@ const Profile = () => {
         );
     }
 
-    const handleRemoveColor = (colorToRemove) => {
-        setUser((prevUser) => ({
-        ...prevUser,
-        savedColors: prevUser.savedColors.filter((color) => color !== colorToRemove)
-        }));
+    const handleRemoveColor = async (colorToRemove) => {
+        if (!userToken) {
+            toast.error("You must be logged in to remove colors");
+            return;
+        }
+
+        try {
+            const { data } = await axios.delete(backendUrl + `/api/palettes/color/delete`, {
+                headers: { token: userToken },
+                data: { color: colorToRemove }
+            });
+
+            if (data.success) {
+                setUserData((prev) => ({
+                    ...prev,
+                    savedColors: prev.savedColors.filter((c) => c !== colorToRemove),
+                }));
+                toast.success(data.message);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
     };
 
     const handleRemovePalette = async (paletteId) => {

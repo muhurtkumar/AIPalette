@@ -175,3 +175,36 @@ export const saveColor = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+// Delete color from user's savedColors
+export const deleteColor = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { color } = req.body || {};
+
+        if (!color) {
+            return res.status(400).json({ success: false, message: "Color is required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        if (!user.savedColors.includes(color)) {
+            return res.status(400).json({ success: false, message: "Color not found in savedColors" });
+        }
+
+        user.savedColors = user.savedColors.filter(c => c !== color);
+        await user.save();
+
+        res.json({
+            success: true,
+            message: "Color removed successfully",
+            savedColors: user.savedColors,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
