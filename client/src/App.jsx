@@ -11,6 +11,7 @@ import { AppContext } from './context/AppContext'
 import Generate from './pages/Generate'
 import Profile from './pages/Profile'
 import ViewPalette from './pages/ViewPalette'
+import VisualizePalette from './pages/VisualizePalette'
 
 const App = () => {
 
@@ -26,6 +27,7 @@ const App = () => {
           <Route path='/explore' element={<Explore />} />
           <Route path='/generate' element={<Generate />} />
           <Route path='/palette/:id' element={<ViewPalette />} />
+          <Route path='/visualize/:paletteId' element={<VisualizePalette />} />
           {userToken && <Route path='/profile' element={<Profile />} />}
         </Routes>
         <Footer />

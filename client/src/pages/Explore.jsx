@@ -53,7 +53,7 @@ const Explore = () => {
                                 </div>
                                 {/* Right-aligned icons */}
                                 <div className="flex items-center gap-4">
-                                    <div className="hover:text-blue-500 cursor-pointer">
+                                    <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/visualize/${palette._id}`)}>
                                     <FaEye />
                                     </div>
                                     <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
