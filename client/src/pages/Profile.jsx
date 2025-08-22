@@ -4,9 +4,11 @@ import { FiEye } from "react-icons/fi";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { userData, fetchUserData, userToken, backendUrl, setUserData } = useContext(AppContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!userData) {
@@ -127,10 +129,10 @@ const Profile = () => {
                                     <button onClick={() => handleRemovePalette(palette._id)} className="flex-1 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors cursor-pointer">
                                         Remove
                                     </button>
-                                    <button className="flex-1 py-2 text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors cursor-pointer">
+                                    <button className="flex-1 py-2 text-sm font-medium text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
                                         Palette
                                     </button>
-                                    <button className="flex-1 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                                    <button className="flex-1 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer" onClick={() => navigate(`/visualize/${palette._id}`)}>
                                         Visualize <FiEye size={16} />
                                     </button>
                                 </div>

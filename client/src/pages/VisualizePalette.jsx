@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import Loading from "../components/Loading";
 
@@ -38,10 +38,11 @@ const getTextColor = (bg) => {
 
 const VisualizePalette = () => {
     const { paletteId } = useParams();
+    const location = useLocation();
     const { getPaletteById } = useContext(AppContext);
 
-    const [palette, setPalette] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [palette, setPalette] = useState(location.state?.palette || null);
+    const [loading, setLoading] = useState(!location.state?.palette);
 
     const fetchPaletteById = async () => {
         setLoading(true);
@@ -51,8 +52,10 @@ const VisualizePalette = () => {
     };
 
     useEffect(() => {
-        fetchPaletteById();
-    }, [paletteId, getPaletteById]);
+        if (!palette){
+            fetchPaletteById();
+        }
+    }, [paletteId, getPaletteById, palette]);
 
     if (loading) {
         return <Loading />;

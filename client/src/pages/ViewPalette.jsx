@@ -100,7 +100,7 @@ const ViewPalette = () => {
         <div className="w-full h-screen flex flex-col pt-2">
             {/* Toolbar */}
             <div className="flex justify-center items-center gap-6 py-4 bg-white shadow-md">
-                <button className="text-gray-600 hover:text-blue-500 text-xl">
+                <button className="text-gray-600 hover:text-blue-500 text-xl" onClick={() => navigate(`/visualize/${palette._id}`, { state: { palette } })}>
                     <FaEye />
                 </button>
                 <button className="text-gray-600 hover:text-red-500 text-xl" onClick={() => savePalette({ paletteId: palette._id, colors: palette.colors })}>
