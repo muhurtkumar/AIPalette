@@ -208,3 +208,43 @@ export const deleteColor = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+// Like/Unlike a Palette
+export const likePalette = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const paletteId = req.params.id;
+
+        const user = await User.findById(userId);
+        const palette = await Palette.findById(paletteId);
+
+        if (!palette) {
+            return res.status(404).json({ success: false, message: "Palette not found" });
+        }
+
+        const alreadyLiked = user.likedPalettes.includes(paletteId);
+
+        if (alreadyLiked) {
+            user.likedPalettes = user.likedPalettes.filter(
+                (id) => id.toString() !== paletteId.toString()
+            );
+            palette.likes = Math.max(0, palette.likes - 1);
+        } 
+        else {
+            user.likedPalettes.push(paletteId);
+            palette.likes += 1;
+        }
+
+        await user.save();
+        await palette.save();
+
+        return res.json({
+            success: true,
+            message: alreadyLiked ? "Unliked the palette" : "Liked the palette",
+            likes: palette.likes,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+}

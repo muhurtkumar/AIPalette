@@ -29,6 +29,12 @@ const userSchema = new mongoose.Schema({
       type: String
     }
   ],
+  likedPalettes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Palette'
+    }
+  ],
 },
 {
   timestamps: true
