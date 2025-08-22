@@ -5,15 +5,15 @@ import { FaEye, FaDownload, FaPalette } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Generate = () => {
 
-    const { userToken, backendUrl, savePalette } = useContext(AppContext);
+    const { userToken, backendUrl, savePalette, generatedPalettes, setGeneratedPalettes, generatedPrompt, setGeneratedPrompt } = useContext(AppContext);
+    const navigate = useNavigate();
 
     const [prompt, setPrompt] = useState("");
-    const [generatedPrompt, setGeneratedPrompt] = useState("");
     const [loading, setLoading] = useState(false);
-    const [palettes, setPalettes] = useState([]);
 
     const handleGenerate = async () => {
         if (!prompt.trim()) {
@@ -22,7 +22,7 @@ const Generate = () => {
         }
 
         setLoading(true);
-        setPalettes([]);
+        setGeneratedPalettes([]);
         setGeneratedPrompt(prompt);
 
         try {
@@ -48,7 +48,7 @@ const Generate = () => {
                 _id: p._id,
                 colors: p.colors
             }));
-            setPalettes(extracted);
+            setGeneratedPalettes(extracted);
             toast.success("Palettes generated successfully!");
         } catch (err) {
             toast.error(err.response?.data?.message || err.message || "Server Error");
@@ -82,21 +82,21 @@ const Generate = () => {
                 ))}
             </div>
 
-            {!loading && palettes.length > 0 && (
+            {!loading && generatedPalettes.length > 0 && (
                 <>
                     <p className="text-center text-gray-600 mb-4">
                         Showing results for: <strong>{generatedPrompt}</strong>
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                        {palettes.map((palette, idx) => (
+                        {generatedPalettes.map((palette, idx) => (
                             <div key={idx} className="flex flex-col items-center">
                                 <ColorPaletteBlock colors={palette.colors} />
                                 <div className="flex justify-end items-center w-full mt-3 text-gray-600 text-sm px-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="hover:text-blue-500 cursor-pointer">
+                                        <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/visualize/${palette._id}`)}>
                                             <FaEye />
                                         </div>
-                                        <div className="hover:text-blue-500 cursor-pointer">
+                                        <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
                                             <FaPalette />
                                         </div>
                                         <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette({ paletteId: palette._id })}>

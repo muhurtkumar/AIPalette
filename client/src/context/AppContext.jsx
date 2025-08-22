@@ -15,6 +15,9 @@ export const AppContextProvider = (props) => {
     const [userToken, setUserToken] = useState(null);
     const [userData, setUserData] = useState(null);
 
+    const [generatedPalettes, setGeneratedPalettes] = useState([]);
+    const [generatedPrompt, setGeneratedPrompt] = useState("");
+
     // Function to fetch user data
     const fetchUserData = async () => {
         try {
@@ -133,7 +136,11 @@ export const AppContextProvider = (props) => {
         fetchUserData, 
         savePalette,
         getPaletteById,
-        saveColor
+        saveColor,
+        generatedPalettes,
+        setGeneratedPalettes,
+        generatedPrompt,
+        setGeneratedPrompt
     }
 
     return (
