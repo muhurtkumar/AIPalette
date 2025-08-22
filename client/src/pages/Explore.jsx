@@ -8,8 +8,8 @@ import Loading from "../components/Loading.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Explore = () => {
-    
-    const { backendUrl, savePalette } = useContext(AppContext);
+
+    const { backendUrl, savePalette, toggleLike, userData } = useContext(AppContext);
 
     const [palettes, setPalettes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,6 +23,17 @@ const Explore = () => {
             console.error("Failed to fetch palettes:", err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleLikeClick = async (paletteId) => {
+        const res = await toggleLike(paletteId);
+        if (res?.success) {
+            setPalettes((prev) =>
+                prev.map((p) =>
+                    p._id === paletteId ? { ...p, likes: res.likes } : p
+                )
+            );
         }
     };
 
@@ -42,30 +53,33 @@ const Explore = () => {
                 <Loading />
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {palettes.map((palette, idx) => (
-                        <div key={idx} className="flex flex-col items-center w-full max-w-[300px] mx-auto">
-                            <ColorPaletteBlock colors={palette.colors} />
-                            <div className="flex justify-between items-center w-full mt-3 text-gray-600 text-sm px-4">
-                                {/* Left-aligned Like */}
-                                <div className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
-                                    <FaHeart />
-                                    <span>{palette.likes || 0}</span>
-                                </div>
-                                {/* Right-aligned icons */}
-                                <div className="flex items-center gap-4">
-                                    <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/visualize/${palette._id}`)}>
-                                    <FaEye />
+                    {palettes.map((palette, idx) => {
+                        const isLiked = userData?.likedPalettes?.includes(palette._id);
+                        return(
+                            <div key={idx} className="flex flex-col items-center w-full max-w-[300px] mx-auto">
+                                <ColorPaletteBlock colors={palette.colors} />
+                                <div className="flex justify-between items-center w-full mt-3 text-gray-600 text-sm px-4">
+                                    {/* Left-aligned Like */}
+                                    <div className={`flex items-center gap-1 cursor-pointer ${isLiked ? "text-red-500" : "hover:text-red-500"}`} onClick={() => handleLikeClick(palette._id)}>
+                                        <FaHeart />
+                                        <span>{palette.likes || 0}</span>
                                     </div>
-                                    <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
-                                    <FaPalette />
-                                    </div>
-                                    <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette({ paletteId: palette._id })}>
-                                    <FaDownload />
+                                    {/* Right-aligned icons */}
+                                    <div className="flex items-center gap-4">
+                                        <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/visualize/${palette._id}`)}>
+                                            <FaEye />
+                                        </div>
+                                        <div className="hover:text-blue-500 cursor-pointer" onClick={() => navigate(`/palette/${palette._id}`)}>
+                                            <FaPalette />
+                                        </div>
+                                        <div className="hover:text-green-500 cursor-pointer" onClick={() => savePalette({ paletteId: palette._id })}>
+                                            <FaDownload />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>

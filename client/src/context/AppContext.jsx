@@ -110,6 +110,33 @@ export const AppContextProvider = (props) => {
             return null;
         }
     };
+
+    // Function to like/unlike a palette
+    const toggleLike = async (paletteId) => {
+        if (!userToken) {
+            toast.error("You must be logged in to like palettes");
+            return;
+        }
+
+        try {
+            const { data } = await axios.post(
+                backendUrl + `/api/palettes/palette/like/${paletteId}`,
+                {},
+                { headers: { token: userToken } }
+            );
+
+            if (data.success) {
+                await fetchUserData();
+                toast.success(data.message);
+                return { success: true, likes: data.likes };
+            } 
+            else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
     
     useEffect(() => {
 
@@ -140,7 +167,8 @@ export const AppContextProvider = (props) => {
         generatedPalettes,
         setGeneratedPalettes,
         generatedPrompt,
-        setGeneratedPrompt
+        setGeneratedPrompt,
+        toggleLike
     }
 
     return (
