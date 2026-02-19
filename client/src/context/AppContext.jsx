@@ -33,7 +33,14 @@ export const AppContextProvider = (props) => {
                 toast.error(data.message);
             }
         } catch (error) {
-            toast.error(error.message);
+            if (error.response?.status === 401) {
+            // JWT expired or invalid → clear session
+            localStorage.removeItem("userToken");
+            setUserToken(null);
+            setUserData(null);
+            return;
+        }
+            toast.error(error.response?.data?.message || error.message);
         }
     }
 
@@ -141,7 +148,7 @@ export const AppContextProvider = (props) => {
     useEffect(() => {
 
         const storedUserToken = localStorage.getItem('userToken'); // keep access of token even after page refresh
-        if(storedUserToken) {
+        if(storedUserToken && storedUserToken !== "undefined") {
             setUserToken(storedUserToken);
         }
     }, [])
