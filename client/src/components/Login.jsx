@@ -20,6 +20,8 @@ const Login = () => {
     const [image, setImage] = useState(false);
     const [isTextDataSubmitted, setIsTextDataSubmitted] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+
     const onSubmitHandler = async(e) => {
         e.preventDefault();
         if(state == "Sign Up" && !isTextDataSubmitted){
@@ -27,6 +29,7 @@ const Login = () => {
         }
 
         try {
+            setLoading(true);
             if(state === "Login"){
                 const {data} = await axios.post(backendUrl + '/api/users/login', {
                     email,
@@ -46,6 +49,7 @@ const Login = () => {
             else{
                 if (!image) {
                     toast.error("Please upload a profile picture");
+                    setLoading(false);
                     return;
                 }
                 const formData = new FormData();
@@ -69,6 +73,8 @@ const Login = () => {
         } catch (error) {
             const message = error.response?.data?.message || error.message || "Something went wrong, please try again later";
             toast.error(message);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -111,8 +117,16 @@ const Login = () => {
                     </div>
                 </>}
                 {state === "Login" && <p className='text-sm text-blue-600 mt-4 cursor-pointer'>Forgot password?</p>}
-                <button type='submit' className='bg-blue-600 w-full text-white py-2 rounded-full mt-4'>
-                    {state === 'Login' ? 'Login' : isTextDataSubmitted ? 'Create Account' : 'Next'}
+                <button type='submit' disabled={loading} className={`bg-blue-600 w-full text-white py-2 rounded-full mt-4 flex justify-center items-center ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                    {loading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                        state === 'Login' 
+                            ? 'Login' 
+                            : isTextDataSubmitted 
+                                ? 'Create Account' 
+                                : 'Next'
+                    )}
                 </button>
                 {
                     state === 'Login'
